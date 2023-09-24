@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start-limitation-server": "node dist/limitationBackend/index.js",
     "dev": "concurrently \"tsc -w \" \"nodemon dist/index.js\"",
     "check-prettier": "prettier --check \"./src/**/*.ts\"",
     "fix-prettier": "prettier --write \"./src/**/*.ts\"",
