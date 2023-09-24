@@ -4,35 +4,35 @@ import { Data } from "../types/data";
 import { Limit } from "../types/data";
 
 const dataSchema: mongoose.Schema = new mongoose.Schema(
-  {
-    devideName: { type: String, required: true },
-    deviceId: { type: String, required: true },
-    limitations: {
-      type: [
-        {
-          id: String,
-          name: String,
-          description: String,
-          status: Boolean,
-          version: String,
+    {
+        devideName: { type: String, required: true },
+        deviceId: { type: String, required: true },
+        limitations: {
+            type: [
+                {
+                    id: String,
+                    name: String,
+                    description: String,
+                    status: Boolean,
+                    version: String,
+                },
+            ],
+            required: true,
         },
-      ],
-      required: true,
+        scenario: { type: String, required: true },
+        user: { type: String, required: true },
+        log: { type: String, required: true },
+        // createdDate: { type: Date, default: Date.now },
     },
-    scenario: { type: String, required: true },
-    user: { type: String, required: true },
-    log: { type: String, required: true },
-    // createdDate: { type: Date, default: Date.now },
-  },
-  {
-    timestamps: true,
-  }
+    {
+        timestamps: true,
+    }
 );
 
 dataSchema.set("toJSON", {
-  virtuals: true,
-  versionKey: false,
+    virtuals: true,
+    versionKey: false,
 });
 
 export default mongoose.models.Limit ||
-  mongoose.model<Data>("Limit", dataSchema);
+    mongoose.model<Data>("Limit", dataSchema);

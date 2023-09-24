@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 export const establishConnection = async (connectionString: string) => {
-  await mongoose.connect(connectionString)
-}
+    await mongoose.connect(connectionString);
+};

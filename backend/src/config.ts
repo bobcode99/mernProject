@@ -17,9 +17,9 @@ console.log(process.env.FASTIFY_PORT);
 // });
 const port = parseInt(process.env.FASTIFY_PORT || "8888");
 export const env: AppConfig = {
-  FASTIFY_HOST: process.env.FASTIFY_HOST || "0.0.0.0",
-  FASTIFY_PORT: port,
-  MONGO_CONNECTION_STRING:
-    process.env.MONGO_CONNECTION_STRING_DATA_POOL ||
-    "mongodb://localhost:27017/dataPool",
+    FASTIFY_HOST: process.env.FASTIFY_HOST || "0.0.0.0",
+    FASTIFY_PORT: port,
+    MONGO_CONNECTION_STRING:
+        process.env.MONGO_CONNECTION_STRING_DATA_POOL ||
+        "mongodb://localhost:27017/dataPool",
 };
