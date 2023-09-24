@@ -2,6 +2,7 @@ import FastifyCors from "@fastify/cors";
 import FastifyStatic from "@fastify/static";
 import fastify, { FastifyInstance } from "fastify";
 import { AppConfig } from "./types/appConfig";
+import { establishConnection } from "./plugins/mongodb";
 export const serverOf: () => FastifyInstance = () => {
   const server: FastifyInstance = fastify({
     logger: {
@@ -24,13 +25,13 @@ export const serverStart: (
   server: FastifyInstance
 ) => (appConfig: AppConfig) => Promise<FastifyInstance> =
   (server) => async (appConfig) => {
-    // try {
-    //   //   await establishConnection(appConfig.MONGO_CONNECTION_STRING)
-    //   server.log.info(`Mongo connect successfully`);
-    // } catch (error) {
-    //   server.log.fatal(`Failed to connect mongodb: ${error}`);
-    //   throw new Error(`${error}`);
-    // }
+    try {
+      await establishConnection(appConfig.MONGO_CONNECTION_STRING);
+      server.log.info(`Mongo connect successfully`);
+    } catch (error) {
+      server.log.fatal(`Failed to connect mongodb: ${error}`);
+      throw new Error(`${error}`);
+    }
 
     await server.listen({
       port: appConfig.FASTIFY_PORT,
