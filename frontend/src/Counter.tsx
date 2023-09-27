@@ -6,7 +6,7 @@ import "./App.css";
 function Counter() {
     const [count, setCount] = useState(0);
 
-    const handleClick = (count: number) => count + 1;
+    // const handleClick = (count: number) => count + 1;
 
     function handleClick1(amount: number) {
         setCount((currentCount) => {

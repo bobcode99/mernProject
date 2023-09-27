@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createServer } from "miragejs";
 
 // Create a MirageJS server instance
-const server = createServer({
+createServer({
     routes() {
         this.namespace = "api";
 
