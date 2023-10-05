@@ -17,7 +17,7 @@ export const updateData: (
     id: string,
     dataBody: Data
 ) => Promise<Data | null> = (id, dataBody) => {
-    return DataSchema.findByIdAndUpdate(id, dataBody, { new: true });
+    return DataSchema.findOneAndUpdate({ id: id }, dataBody, { new: true });
 };
 
 export const deleteById: (id: string) => Promise<Data | null> = (id) => {

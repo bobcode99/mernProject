@@ -183,7 +183,33 @@ describe("mongo test container test", () => {
             method: "DELETE",
             url: `/api/combinations/${idNeedDelete}`,
         });
+        console.log("responseDelete: ", responseDelete);
 
         expect(responseDelete.statusCode).toBe(204);
+    });
+
+    it("Should update by id", async () => {
+        const responsePost = await server.inject({
+            method: "POST",
+            url: "/api/combinations",
+            body: sampleDataArr[0],
+        });
+        const body: { combinations: Data } = JSON.parse(responsePost.body);
+
+        const responsePut = await server.inject({
+            method: "PUT",
+            url: `/api/combinations/${body.combinations.id}`,
+            body: {
+                deviceID: "007",
+            },
+        });
+        console.log("responsePut: ", responsePut);
+        const bodyAfterPut: { combinations: Data } = JSON.parse(
+            responsePut.body
+        );
+
+        console.log("bodyAfterPut: ", bodyAfterPut);
+        expect(responsePut.statusCode).toBe(200);
+        expect(bodyAfterPut.combinations.deviceID).toBe("007");
     });
 });

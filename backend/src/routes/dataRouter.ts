@@ -88,6 +88,30 @@ export const DataRouter = (
             }
         }
     );
+    server.put<{ Params: IdParam; Body: Data }>(
+        "/combinations/:id",
+        async (request, reply) => {
+            try {
+                const id = request.params.id;
+                const bodyNeedUpdate = request.body;
+                const combinations = await repo.updateData(id, bodyNeedUpdate);
+
+                console.log("updateResult: ", combinations);
+                if (combinations) {
+                    return reply.status(200).send({ combinations });
+                } else {
+                    return reply
+                        .status(404)
+                        .send({ msg: `Not Found Combinations:${id}` });
+                }
+            } catch (e) {
+                server.log.error(
+                    `DELETE /combinations/${request.params.id} Error: ${e}`
+                );
+                return reply.status(500).send(`[Server Error]: ${e}`);
+            }
+        }
+    );
 
     done();
 };
