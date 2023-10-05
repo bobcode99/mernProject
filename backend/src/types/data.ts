@@ -1,4 +1,5 @@
 export type Data = {
+    id: string;
     deviceType: string;
     devideID: string;
     limitation: Array<Limit>;

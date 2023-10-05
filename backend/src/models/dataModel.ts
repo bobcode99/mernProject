@@ -5,7 +5,8 @@ import { Limit } from "../types/data";
 
 const dataSchema: mongoose.Schema = new mongoose.Schema(
     {
-        devideName: { type: String, required: true },
+        id: { type: String, required: true, unique: true },
+        deviceType: { type: String, required: true },
         deviceId: { type: String, required: true },
         limitations: {
             type: [
