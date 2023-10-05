@@ -20,6 +20,6 @@ export const updateData: (
     return DataSchema.findByIdAndUpdate(id, dataBody, { new: true });
 };
 
-export const deleteTodo: (id: string) => Promise<Data | null> = (id) => {
-    return DataSchema.findByIdAndDelete(id);
+export const deleteById: (id: string) => Promise<Data | null> = (id) => {
+    return DataSchema.findOneAndDelete({ id: id });
 };

@@ -34,18 +34,22 @@ export const DataRouter = (
             },
         },
     };
-    server.post("/combinations", async (request, reply) => {
-        try {
-            const dataBody = request.body as Data;
-            console.log("dataBody: ", dataBody);
-            const combinations = await repo.addData(dataBody);
-            console.log("post combinations: ", combinations);
-            return reply.status(201).send({ combinations });
-        } catch (error) {
-            server.log.error(`POST /combinations Error: ${error}`);
-            return reply.status(500).send(`[Server Error]: ${error}`);
+    server.post(
+        "/combinations",
+        { schema: postDataBodySchema },
+        async (request, reply) => {
+            try {
+                const dataBody = request.body as Data;
+                console.log("post dataBody: ", dataBody);
+                const combinations = await repo.addData(dataBody);
+                console.log("post combinations: ", combinations);
+                return reply.status(201).send({ combinations });
+            } catch (error) {
+                server.log.error(`POST /combinations Error: ${error}`);
+                return reply.status(500).send(`[Server Error]: ${error}`);
+            }
         }
-    });
+    );
     server.get<{ Params: IdParam }>(
         "/combinations/:id",
         async (request, reply) => {
@@ -62,5 +66,28 @@ export const DataRouter = (
             }
         }
     );
+    server.delete<{ Params: IdParam }>(
+        "/combinations/:id",
+        async (request, reply) => {
+            try {
+                const id = request.params.id;
+                const deleteResult = await repo.deleteById(id);
+
+                if (deleteResult) {
+                    return reply.status(204).send({ deleteResult });
+                } else {
+                    return reply
+                        .status(404)
+                        .send({ msg: `Not Found Combinations:${id}` });
+                }
+            } catch (e) {
+                server.log.error(
+                    `DELETE /combinations/${request.params.id} Error: ${e}`
+                );
+                return reply.status(500).send(`[Server Error]: ${e}`);
+            }
+        }
+    );
+
     done();
 };

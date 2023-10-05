@@ -2,7 +2,7 @@ import { Type } from "@sinclair/typebox";
 
 export const postDataBodySchema = Type.Object({
     deviceType: Type.String(),
-    deviceId: Type.String(),
+    deviceID: Type.String(),
     limitations: Type.Array(
         Type.Object({
             id: Type.String(),

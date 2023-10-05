@@ -109,7 +109,8 @@ describe("mongo test container test", () => {
         console.log("Get all body: ", body);
         expect(body.length).toBe(2);
     });
-    it("Should add combinations", async () => {
+    it("Should add combinations using post", async () => {
+        console.log("post send body: ", sampleDataArr[0]);
         const response = await server.inject({
             method: "POST",
             url: "/api/combinations",
@@ -130,7 +131,59 @@ describe("mongo test container test", () => {
 
         expect(body.combinations.scenario).toBe(sampleDataArr[0].scenario);
     });
+
+    it("Should return 500", async () => {
+        const wrongData = {
+            id: 135,
+            deviceType: "Apple",
+            deviceID: "A001",
+            limitations: [
+                {
+                    id: "l1",
+                    name: "WATER_DAMAGE",
+                    description: "water damage",
+                    status: true,
+                    version: "0.0.1",
+                },
+                {
+                    id: "l2",
+                    name: "CAMERA_DIRTY",
+                    description: "Dirty camera",
+                    status: true,
+                    version: "0.0.1",
+                },
+            ],
+            // magic: false,
+            scenario: "UP",
+            user: "Jotaro",
+            log: "empty",
+        };
+
+        const response = await server.inject({
+            method: "POST",
+            url: "/api/combinations",
+            body: wrongData,
+        });
+        const body: { combinations: Data } = JSON.parse(response.body);
+        console.log("fail post body: ", body);
+        expect(response.statusCode).toBe(500);
+    });
     it("Should delete combinations by id", async () => {
-        fail();
+        const response = await server.inject({
+            method: "POST",
+            url: "/api/combinations",
+            body: sampleDataArr[0],
+        });
+        const body: { combinations: Data } = JSON.parse(response.body);
+        console.log("Body need need delete: ", body);
+
+        const idNeedDelete = body.combinations.id;
+        console.log("idNeedDelete: ", idNeedDelete);
+        const responseDelete = await server.inject({
+            method: "DELETE",
+            url: `/api/combinations/${idNeedDelete}`,
+        });
+
+        expect(responseDelete.statusCode).toBe(204);
     });
 });
