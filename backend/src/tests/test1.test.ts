@@ -17,7 +17,7 @@ describe("mongo test container test", () => {
         {
             id: "001",
             deviceType: "Apple",
-            devideID: "A001",
+            deviceID: "A001",
             limitations: [
                 {
                     id: "l1",
@@ -41,7 +41,7 @@ describe("mongo test container test", () => {
         {
             id: "002",
             deviceType: "Apple",
-            devideID: "A0015",
+            deviceID: "A0015",
             limitations: [
                 {
                     id: "l1",
@@ -103,17 +103,29 @@ describe("mongo test container test", () => {
         await addData(sampleDataArr[1]);
         const response = await server.inject({
             method: "GET",
-            url: "/api/combination",
+            url: "/api/combinations",
         });
-        const body: Array<Data> = JSON.parse(response.body)["combination"];
-        console.log("body: ", body);
+        const body: Array<Data> = JSON.parse(response.body)["combinations"];
+        console.log("Get all body: ", body);
         expect(body.length).toBe(2);
     });
     it("Should add combinations", async () => {
-        fail();
+        const response = await server.inject({
+            method: "POST",
+            url: "/api/combinations",
+            body: sampleDataArr[0],
+        });
+        const body: { combinations: Data } = JSON.parse(response.body);
+        expect(body.combinations.deviceID).toBe(sampleDataArr[0].deviceID);
     });
     it("Should get combination by id", async () => {
-        fail();
+        await addData(sampleDataArr[0]);
+        const response = await server.inject({
+            method: "GET",
+            url: "/api/combinations/001",
+        });
+        const body: { combinations: Data } = JSON.parse(response.body);
+        expect(body.combinations.deviceID).toBe(sampleDataArr[0].deviceID);
     });
     it("Should delete combinations by id", async () => {
         fail();
