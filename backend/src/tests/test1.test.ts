@@ -116,6 +116,8 @@ describe("mongo test container test", () => {
             body: sampleDataArr[0],
         });
         const body: { combinations: Data } = JSON.parse(response.body);
+        console.log("post body: ", body);
+
         expect(body.combinations.deviceID).toBe(sampleDataArr[0].deviceID);
     });
     it("Should get combination by id", async () => {
@@ -125,7 +127,8 @@ describe("mongo test container test", () => {
             url: "/api/combinations/001",
         });
         const body: { combinations: Data } = JSON.parse(response.body);
-        expect(body.combinations.deviceID).toBe(sampleDataArr[0].deviceID);
+
+        expect(body.combinations.scenario).toBe(sampleDataArr[0].scenario);
     });
     it("Should delete combinations by id", async () => {
         fail();

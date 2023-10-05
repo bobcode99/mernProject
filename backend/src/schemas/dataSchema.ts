@@ -1,9 +1,7 @@
 import { Type } from "@sinclair/typebox";
 
-import { Limit } from "../types/data";
-
 export const postDataBodySchema = Type.Object({
-    deviceName: Type.String(),
+    deviceType: Type.String(),
     deviceId: Type.String(),
     limitations: Type.Array(
         Type.Object({
@@ -19,6 +17,10 @@ export const postDataBodySchema = Type.Object({
     log: Type.String(),
 });
 
-export const dataResponseSchema = Type.Object({
-    combination: Type.Array(postDataBodySchema),
+export const getAllDataResponseSchema = Type.Object({
+    combinations: Type.Array(postDataBodySchema),
+});
+
+export const postDataResponseSchema = Type.Object({
+    combinations: postDataBodySchema,
 });

@@ -1,8 +1,15 @@
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import { dataResponseSchema, postDataBodySchema } from "../schemas/dataSchema";
+import {
+    postDataResponseSchema,
+    getAllDataResponseSchema,
+    postDataBodySchema,
+} from "../schemas/dataSchema";
 import { Data } from "../types/data";
 import * as repo from "./../repo/data-repo";
 
+type IdParam = {
+    id: string;
+};
 export const DataRouter = (
     server: FastifyInstance,
     opts: RouteShorthandOptions,
@@ -23,7 +30,7 @@ export const DataRouter = (
         schema: {
             body: postDataBodySchema,
             response: {
-                201: dataResponseSchema,
+                201: postDataResponseSchema,
             },
         },
     };
@@ -39,5 +46,21 @@ export const DataRouter = (
             return reply.status(500).send(`[Server Error]: ${error}`);
         }
     });
+    server.get<{ Params: IdParam }>(
+        "/combinations/:id",
+        async (request, reply) => {
+            const id = request.params.id;
+            try {
+                const combinationsByID = await repo.getDataById(id);
+                console.log("combinationsByID: ", combinationsByID);
+                return reply
+                    .status(200)
+                    .send({ combinations: combinationsByID });
+            } catch (e) {
+                server.log.error(`GET /combinations/${id} Error: ${e}`);
+                return reply.status(500).send(`[Server Error]: ${e}`);
+            }
+        }
+    );
     done();
 };

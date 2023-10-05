@@ -9,6 +9,10 @@ export const addData: (dataBody: Data) => Promise<Data> = (dataBody) => {
     return DataSchema.create(dataBody);
 };
 
+export const getDataById: (id: string) => Promise<Data> = (id) => {
+    return DataSchema.findOne({ id: id }).exec();
+};
+
 export const updateData: (
     id: string,
     dataBody: Data
