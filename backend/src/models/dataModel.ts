@@ -1,23 +1,23 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 import { Data } from "../types/data";
 import { Limit } from "../types/data";
 
-const dataSchema: mongoose.Schema = new mongoose.Schema(
+const limitSchema: Schema = new Schema({
+    id: String,
+    name: String,
+    description: String,
+    status: Boolean,
+    version: String,
+});
+
+const dataSchema: Schema = new Schema(
     {
         id: { type: String, required: true, unique: true },
         deviceType: { type: String, required: true },
         devideID: { type: String, required: true },
         limitations: {
-            type: [
-                {
-                    id: String,
-                    name: String,
-                    description: String,
-                    status: Boolean,
-                    version: String,
-                },
-            ],
+            type: [limitSchema],
             required: true,
         },
         scenario: { type: String, required: true },

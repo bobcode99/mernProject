@@ -2,7 +2,7 @@ export type Data = {
     id: string;
     deviceType: string;
     devideID: string;
-    limitation: Array<Limit>;
+    limitations: Array<Limit>;
     scenario: string;
     user: string;
     log: string;
