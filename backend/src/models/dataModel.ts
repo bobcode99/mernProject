@@ -7,7 +7,7 @@ const dataSchema: mongoose.Schema = new mongoose.Schema(
     {
         id: { type: String, required: true, unique: true },
         deviceType: { type: String, required: true },
-        deviceId: { type: String, required: true },
+        devideID: { type: String, required: true },
         limitations: {
             type: [
                 {
