@@ -3,12 +3,17 @@ import {
     postDataResponseSchema,
     getAllDataResponseSchema,
     postDataBodySchema,
+    postDataSchemaByZod,
 } from "../schemas/dataSchema";
 import { Data } from "../types/data";
 import * as repo from "./../repo/data-repo";
 
 type IdParam = {
     id: string;
+};
+
+const verifySchema = (needVerify: Data) => {
+    return postDataSchemaByZod.parse(needVerify);
 };
 export const DataRouter = (
     server: FastifyInstance,
@@ -34,22 +39,17 @@ export const DataRouter = (
             },
         },
     };
-    server.post(
-        "/combinations",
-        { schema: postDataBodySchema },
-        async (request, reply) => {
-            try {
-                const dataBody = request.body as Data;
-                console.log("post dataBody: ", dataBody);
-                const combinations = await repo.addData(dataBody);
-                console.log("post combinations: ", combinations);
-                return reply.status(201).send({ combinations });
-            } catch (error) {
-                server.log.error(`POST /combinations Error: ${error}`);
-                return reply.status(500).send(`[Server Error]: ${error}`);
-            }
+    server.post<{ Body: Data }>("/combinations", async (request, reply) => {
+        try {
+            const dataBody = request.body as Data;
+            verifySchema(dataBody);
+            const combinations = await repo.addData(dataBody);
+            return reply.status(201).send({ combinations });
+        } catch (error) {
+            server.log.error(`POST /combinations Error: ${error}`);
+            return reply.status(500).send(`[Server Error]: ${error}`);
         }
-    );
+    });
     server.get<{ Params: IdParam }>(
         "/combinations/:id",
         async (request, reply) => {

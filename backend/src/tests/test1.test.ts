@@ -134,7 +134,7 @@ describe("mongo test container test", () => {
 
     it("Should return 500", async () => {
         const wrongData = {
-            id: 135,
+            id: "32566dq",
             deviceType: "Apple",
             deviceID: "A001",
             limitations: [
@@ -153,7 +153,7 @@ describe("mongo test container test", () => {
                     version: "0.0.1",
                 },
             ],
-            // magic: false,
+            magic: false,
             scenario: "UP",
             user: "Jotaro",
             log: "empty",
@@ -164,8 +164,7 @@ describe("mongo test container test", () => {
             url: "/api/combinations",
             body: wrongData,
         });
-        const body: { combinations: Data } = JSON.parse(response.body);
-        console.log("fail post body: ", body);
+        console.log("fail response: ", response);
         expect(response.statusCode).toBe(500);
     });
     it("Should delete combinations by id", async () => {
