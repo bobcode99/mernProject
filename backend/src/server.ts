@@ -3,6 +3,7 @@ import FastifyStatic from "@fastify/static";
 import fastify, { FastifyInstance } from "fastify";
 import { AppConfig } from "./types/appConfig";
 import { establishConnection } from "./plugins/mongodb";
+import { DataRouter } from "./routes/dataRouter";
 export const serverOf: () => FastifyInstance = () => {
     const server: FastifyInstance = fastify({
         logger: {
@@ -17,6 +18,8 @@ export const serverOf: () => FastifyInstance = () => {
     server.get("/ping", async (request, reply) => {
         return reply.status(200).send({ msg: "pong" });
     });
+
+    server.register(DataRouter, { prefix: "/api" });
 
     return server;
 };
