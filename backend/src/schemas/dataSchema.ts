@@ -43,3 +43,5 @@ export const postDataSchemaByZod = object({
     user: z.string(),
     log: z.string(),
 }).strict();
+
+export type postInput = z.infer<typeof postDataSchemaByZod>;
