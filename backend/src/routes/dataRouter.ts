@@ -1,20 +1,11 @@
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import {
-    postDataResponseSchema,
-    getAllDataResponseSchema,
-    postDataBodySchema,
-    postDataSchemaByZod,
-} from "../schemas/dataSchema";
+import { postDataSchemaByZod } from "../schemas/dataSchema";
 import { Data } from "../types/data";
 import * as repo from "./../repo/data-repo";
-
 type IdParam = {
     id: string;
 };
 
-const verifySchema = (needVerify: Data) => {
-    return postDataSchemaByZod.parse(needVerify);
-};
 export const DataRouter = (
     server: FastifyInstance,
     opts: RouteShorthandOptions,
@@ -30,21 +21,18 @@ export const DataRouter = (
             return reply.status(500).send(`[Server Error]: ${e}`);
         }
     });
-    const postCombinationsOptions = {
-        ...opts,
-        schema: {
-            body: postDataBodySchema,
-            response: {
-                201: postDataResponseSchema,
-            },
-        },
-    };
     server.post<{ Body: Data }>("/combinations", async (request, reply) => {
         try {
-            const dataBody = request.body as Data;
-            verifySchema(dataBody);
-            const combinations = await repo.addData(dataBody);
-            return reply.status(201).send({ combinations });
+            const dataBody = await postDataSchemaByZod.safeParseAsync(
+                request.body
+            );
+            if (dataBody.success) {
+                const combinations = await repo.addData(dataBody.data);
+                console.log("post success: ", combinations);
+                return reply.status(201).send({ combinations });
+            } else {
+                return reply.status(422).send("Schema error");
+            }
         } catch (error) {
             server.log.error(`POST /combinations Error: ${error}`);
             return reply.status(500).send(`[Server Error]: ${error}`);

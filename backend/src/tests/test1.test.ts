@@ -132,7 +132,7 @@ describe("mongo test container test", () => {
         expect(body.combinations.scenario).toBe(sampleDataArr[0].scenario);
     });
 
-    it("Should return 500", async () => {
+    it("Should return 422, schema error", async () => {
         const wrongData = {
             id: "32566dq",
             deviceType: "Apple",
@@ -165,7 +165,8 @@ describe("mongo test container test", () => {
             body: wrongData,
         });
         console.log("fail response: ", response);
-        expect(response.statusCode).toBe(500);
+        expect(response.statusCode).toBe(422);
+        expect(response.body).toBe("Schema error");
     });
     it("Should delete combinations by id", async () => {
         const response = await server.inject({
