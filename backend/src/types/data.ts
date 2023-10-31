@@ -5,13 +5,16 @@ export type Data = {
     limitations: Array<Limit>;
     scenario: string;
     user: string;
-    log: string;
 };
 
 export type Limit = {
     id: string;
-    name: string;
+    limitName: string;
     description: string;
-    status: boolean;
-    version: string;
+    user: string;
+};
+
+export type BodyPut = {
+    add: [Limit];
+    delete: [Limit];
 };

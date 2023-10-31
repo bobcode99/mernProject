@@ -1,21 +1,26 @@
 import { Type } from "@sinclair/typebox";
 import { z, object } from "zod";
 
-export const postDataBodySchema = Type.Object({
+const postDataBodySchema = Type.Object({
     deviceType: Type.String(),
     deviceID: Type.String(),
     limitations: Type.Array(
         Type.Object({
             id: Type.String(),
-            name: Type.String(),
+            limitName: Type.String(),
             description: Type.String(),
-            status: Type.Boolean(),
-            version: Type.String(),
+            user: Type.String(),
         })
     ),
     scenario: Type.String(),
     user: Type.String(),
-    log: Type.String(),
+});
+
+export const postDataBodySchemaStrict = Type.Strict(postDataBodySchema);
+const schemaByTypebox = Type.Object({
+    name: Type.String(),
+    description: Type.Optional(Type.String()),
+    status: Type.String(),
 });
 
 export const getAllDataResponseSchema = Type.Object({

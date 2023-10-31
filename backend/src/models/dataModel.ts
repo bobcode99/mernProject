@@ -5,10 +5,9 @@ import { Limit } from "../types/data";
 
 const limitSchema: Schema = new Schema({
     id: String,
-    name: String,
+    limitName: String,
     description: String,
-    status: Boolean,
-    version: String,
+    user: String,
 });
 
 const dataSchema: Schema = new Schema(
@@ -22,7 +21,6 @@ const dataSchema: Schema = new Schema(
         },
         scenario: { type: String, required: true },
         user: { type: String, required: true },
-        log: { type: String, required: true },
         // createdDate: { type: Date, default: Date.now },
     },
     {

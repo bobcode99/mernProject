@@ -1,7 +1,9 @@
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
-import { postDataSchemaByZod } from "../schemas/dataSchema";
-import { Data } from "../types/data";
+import { postDataBodySchemaStrict } from "../schemas/dataSchema";
+import { BodyPut, Data, Limit } from "../types/data";
 import * as repo from "./../repo/data-repo";
+import { Type } from "@sinclair/typebox";
+
 type IdParam = {
     id: string;
 };
@@ -21,23 +23,56 @@ export const DataRouter = (
             return reply.status(500).send(`[Server Error]: ${e}`);
         }
     });
-    server.post<{ Body: Data }>("/combinations", async (request, reply) => {
-        try {
-            const dataBody = await postDataSchemaByZod.safeParseAsync(
-                request.body
-            );
-            if (dataBody.success) {
-                const combinations = await repo.addData(dataBody.data);
+
+    const schemaByTypebox = Type.Object({
+        name: Type.String(),
+        description: Type.Optional(Type.String()),
+        status: Type.String(),
+    });
+
+    const schemaByTypeboxStrict = Type.Strict(schemaByTypebox);
+
+    const routeOptions = {
+        schema: {
+            body: schemaByTypeboxStrict,
+        },
+    };
+
+    server.post("/test", routeOptions, (request, reply) => {
+        // ...
+        return reply.status(200).send({ message: "Hello World" });
+    });
+
+    const postCombinationsOptions = {
+        schema: {
+            body: postDataBodySchemaStrict,
+        },
+    };
+
+    server.post<{ Body: Data }>(
+        "/combinations",
+        postCombinationsOptions,
+        async (request, reply) => {
+            try {
+                // const dataBody = await postDataSchemaByZod.safeParseAsync(
+                //     request.body
+                // );
+                // if (dataBody.success) {
+                //     const combinations = await repo.addData(dataBody.data);
+                //     console.log("post success: ", combinations);
+                //     return reply.status(201).send({ combinations });
+                // } else {
+                //     return reply.status(422).send("Schema error");
+                // }
+                const combinations = await repo.addData(request.body);
                 console.log("post success: ", combinations);
                 return reply.status(201).send({ combinations });
-            } else {
-                return reply.status(422).send("Schema error");
+            } catch (error) {
+                server.log.error(`POST /combinations Error: ${error}`);
+                return reply.status(500).send(`[Server Error]: ${error}`);
             }
-        } catch (error) {
-            server.log.error(`POST /combinations Error: ${error}`);
-            return reply.status(500).send(`[Server Error]: ${error}`);
         }
-    });
+    );
     server.get<{ Params: IdParam }>(
         "/combinations/:id",
         async (request, reply) => {
@@ -76,7 +111,8 @@ export const DataRouter = (
             }
         }
     );
-    server.put<{ Params: IdParam; Body: Data }>(
+
+    server.put<{ Params: IdParam; Body: BodyPut }>(
         "/combinations/:id",
         async (request, reply) => {
             try {
