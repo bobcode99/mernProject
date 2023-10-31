@@ -1,8 +1,4 @@
-import { Cat } from "../models/cat";
 import DataSchema from "../models/dataModel";
-
-import { ICat } from "../models/cat";
-import { faker } from "@faker-js/faker";
 import { closeMongoose, establishConnection } from "../plugins/mongodb";
 import { env } from "../config";
 import { AppConfig } from "../types/appConfig";
@@ -13,11 +9,6 @@ const appConfig: AppConfig = {
     FASTIFY_HOST: env.FASTIFY_HOST,
     MONGO_CONNECTION_STRING: env.MONGO_CONNECTION_STRING,
 };
-
-const fakeCats: Array<ICat> = Array.from({ length: 10 }, () => ({
-    name: faker.animal.cat(),
-    weight: faker.number.int(100),
-}));
 
 const fakeDataArr: Array<Data> = [
     {
@@ -44,7 +35,7 @@ const fakeDataArr: Array<Data> = [
     {
         id: "002",
         deviceType: "Apple",
-        deviceID: "A0015",
+        deviceID: "A001",
         limitations: [
             {
                 id: "l1",
@@ -65,7 +56,49 @@ const fakeDataArr: Array<Data> = [
                 user: "Jammy",
             },
         ],
-        scenario: "UP",
+        scenario: "DOWN",
+        user: "Jammy",
+    },
+    {
+        id: "003",
+        deviceType: "Apple",
+        deviceID: "A002",
+        limitations: [
+            {
+                id: "l1",
+                limitName: "WATER_DAMAGE",
+                description: "water damage",
+                user: "Jammy",
+            },
+            {
+                id: "l2",
+                limitName: "CAMERA_DIRTY",
+                description: "Dirty camera",
+                user: "Jammy",
+            },
+            {
+                id: "l3",
+                limitName: "BATTERY_LOW",
+                description: "Battery in 10% below",
+                user: "Jammy",
+            },
+        ],
+        scenario: "DOWN",
+        user: "Jammy",
+    },
+    {
+        id: "004",
+        deviceType: "Apple",
+        deviceID: "A003",
+        limitations: [
+            {
+                id: "l1",
+                limitName: "WATER_DAMAGE",
+                description: "water damage",
+                user: "Jammy",
+            },
+        ],
+        scenario: "DOWN",
         user: "Jammy",
     },
 ];
