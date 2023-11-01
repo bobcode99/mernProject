@@ -1,5 +1,5 @@
 import DataSchema from "./../models/dataModel";
-import { BodyPut, Data } from "./../types/data";
+import { BodyPut, Data, LimitationsType } from "./../types/data";
 
 export const getData: () => Promise<Array<Data>> = () => {
     return DataSchema.find().exec();
@@ -15,7 +15,7 @@ export const getDataById: (id: string) => Promise<Data> = (id) => {
 
 export const updateData: (
     id: string,
-    dataBody: BodyPut
+    dataBody: [LimitationsType]
 ) => Promise<Data | null> = (id, dataBody) => {
     console.log("dataBody: ", dataBody);
 
@@ -23,10 +23,11 @@ export const updateData: (
     return DataSchema.findOneAndUpdate(
         { id: id },
         {
-            $addToSet: { limitations: { $each: dataBody.add } },
+            // $addToSet: { limitations: { $each: dataBody.add } },
             // $pull: { limitations: { name: { $in: "WATER_DAMAGE" } } },
             // $pullAll: { limitations: dataBody.delete },
             // $pull: { limitations: { name: { $in: dataBody.delete } } },
+            $set: { limitations: dataBody },
         },
         { new: true }
     );

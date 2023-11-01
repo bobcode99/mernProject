@@ -1,8 +1,9 @@
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import { postDataBodySchemaStrict } from "../schemas/dataSchema";
-import { BodyPut, Data, Limit } from "../types/data";
+import { BodyPut, Data, LimitationsType } from "../types/data";
 import * as repo from "./../repo/data-repo";
 import { Type } from "@sinclair/typebox";
+import { updateData } from "../service/updateData";
 
 type IdParam = {
     id: string;
@@ -117,8 +118,9 @@ export const DataRouter = (
         async (request, reply) => {
             try {
                 const id = request.params.id;
-                const bodyNeedUpdate = request.body;
-                const combinations = await repo.updateData(id, bodyNeedUpdate);
+                const bodyPut = request.body;
+
+                const combinations = await updateData(id, bodyPut);
 
                 console.log("updateResult: ", combinations);
                 if (combinations) {

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 import { Data } from "../types/data";
-import { Limit } from "../types/data";
+import { LimitationsType } from "../types/data";
 
 const limitSchema: Schema = new Schema({
     id: String,

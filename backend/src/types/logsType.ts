@@ -1,10 +1,10 @@
-import { Limit } from "./data";
+import { LimitationsType } from "./data";
 export type actionType = "ADD" | "DELETE";
 export type LogsType = {
     logId: string;
     deviceType: string;
     deviceId: string;
-    limitations: Array<Limit>;
+    limitations: Array<LimitationsType>;
     scenario: string;
     user: string;
     action: actionType;

@@ -2,19 +2,21 @@ export type Data = {
     id: string;
     deviceType: string;
     deviceID: string;
-    limitations: Array<Limit>;
+    limitations: Array<LimitationsType>;
     scenario: string;
     user: string;
 };
 
-export type Limit = {
-    id: string;
+export type LimitIdType = string;
+
+export type LimitationsType = {
+    id: LimitIdType;
     limitName: string;
     description: string;
     user: string;
 };
 
 export type BodyPut = {
-    add: [Limit];
-    delete: [Limit];
+    add: Array<LimitIdType>;
+    delete: Array<LimitIdType>;
 };
