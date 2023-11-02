@@ -3,9 +3,10 @@ import FastifyCors from "@fastify/cors";
 import fastify, { FastifyInstance } from "fastify";
 import { AppConfig } from "../types/appConfig";
 import { establishConnection } from "../plugins/mongodb";
-import LimitModel, { ILimitation } from "./schema/limitSchema";
+import LimitModel from "./schema/limitSchema";
+import { LimitationsType } from "../types/data";
 
-const getLimitations: () => Promise<Array<ILimitation>> = () => {
+const getLimitations: () => Promise<Array<LimitationsType>> = () => {
     return LimitModel.find().exec();
 };
 

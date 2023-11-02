@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import limitSchema from "../limitationBackend/schema/limitSchema";
 import { LogsType } from "../types/logsType";
+import { limitSchema } from "./dataModel";
 
 const logsSchema: Schema = new Schema(
     {
