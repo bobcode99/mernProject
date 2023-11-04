@@ -1,5 +1,6 @@
 import DataSchema from "./../models/dataModel";
-import { BodyPut, Data, LimitationsType } from "./../types/data";
+import { BodyPutType, Data, LimitationsType } from "./../types/data";
+import * as RTE from "fp-ts/ReaderTaskEither";
 
 export const getData: () => Promise<Array<Data>> = () => {
     return DataSchema.find().exec();

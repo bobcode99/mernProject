@@ -14,6 +14,7 @@ const logsSchema: Schema = new Schema(
         scenario: { type: String, required: true },
         user: { type: String, required: true },
         action: { type: String, enum: ["ADD", "DELETE"] },
+        date: Date,
     },
     {
         timestamps: true,
@@ -25,5 +26,5 @@ logsSchema.set("toJSON", {
     versionKey: false,
 });
 
-export default mongoose.models.Limit ||
-    mongoose.model<LogsType>("Limit", logsSchema);
+export default mongoose.models.Logs ||
+    mongoose.model<LogsType>("Logs", logsSchema);

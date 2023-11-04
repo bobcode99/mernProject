@@ -4,7 +4,6 @@ export type Data = {
     deviceID: string;
     limitations: Array<LimitationsType>;
     scenario: string;
-    user: string;
 };
 
 export type LimitIdType = string;
@@ -14,9 +13,15 @@ export type LimitationsType = {
     limitName: string;
     description: string;
     user: string;
+    date: Date;
 };
 
-export type BodyPut = {
-    add: Array<LimitIdType>;
-    delete: Array<LimitIdType>;
+type LimitWithIdNameDesc = Omit<LimitationsType, "user" | "date">;
+
+export type BodyPutType = {
+    actionWithUserLimits: {
+        user: string;
+        ADD: Array<LimitWithIdNameDesc>;
+        DELETE: Array<LimitWithIdNameDesc>;
+    };
 };

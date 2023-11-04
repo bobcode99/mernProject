@@ -7,6 +7,7 @@ export const limitSchema: Schema = new Schema({
     limitName: String,
     description: String,
     user: String,
+    date: Date,
 });
 
 const dataSchema: Schema = new Schema(
@@ -19,7 +20,6 @@ const dataSchema: Schema = new Schema(
             required: true,
         },
         scenario: { type: String, required: true },
-        user: { type: String, required: true },
         // createdDate: { type: Date, default: Date.now },
     },
     {

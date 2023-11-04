@@ -8,6 +8,7 @@ import { AppConfig } from "../types/appConfig";
 import { fail } from "assert";
 import { Data } from "../types/data";
 import { addData } from "../repo/data-repo";
+import { getAllLogs } from "../service/logs";
 
 describe("mongo test container test", () => {
     let mongoTestContainer: StartedMongoTestContainer;
@@ -24,16 +25,17 @@ describe("mongo test container test", () => {
                     limitName: "WATER_DAMAGE",
                     description: "water damage",
                     user: "Jotaro",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
                 },
                 {
                     id: "l2",
                     limitName: "CAMERA_DIRTY",
                     description: "Dirty camera",
                     user: "Jotaro",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
                 },
             ],
             scenario: "UP",
-            user: "Jotaro",
         },
         {
             id: "002",
@@ -45,22 +47,39 @@ describe("mongo test container test", () => {
                     limitName: "WATER_DAMAGE",
                     description: "water damage",
                     user: "Jammy",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
                 },
                 {
                     id: "l2",
                     limitName: "CAMERA_DIRTY",
                     description: "Dirty camera",
                     user: "Jammy",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
                 },
                 {
                     id: "l3",
                     limitName: "BATTERY_LOW",
                     description: "Battery in 10% below",
                     user: "Jammy",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
                 },
             ],
             scenario: "UP",
-            user: "Jammy",
+        },
+        {
+            id: "003",
+            deviceType: "Apple",
+            deviceID: "A0039",
+            limitations: [
+                {
+                    id: "l1",
+                    limitName: "WATER_DAMAGE",
+                    description: "water damage",
+                    user: "Jammy",
+                    date: new Date("2023-11-04T09:50:08.761Z"),
+                },
+            ],
+            scenario: "UP",
         },
     ];
     beforeAll(async () => {
@@ -214,38 +233,55 @@ describe("mongo test container test", () => {
         });
         const body: { combinations: Data } = JSON.parse(responsePost.body);
 
+        // ori: l1, l2
+        // add log: add l3, l4
+        // delete log: l1, l2
+        // snapshot: l3, l4
+
         const responsePut = await server.inject({
             method: "PUT",
             url: `/api/combinations/${body.combinations.id}`,
             body: {
-                add: [
+                actionWithUserLimits: [
                     {
-                        id: "l3",
-                        name: "KOJU",
-                        description: "KOJU damage",
-                        status: true,
-                        version: "0.0.1",
+                        action: "ADD",
+                        limits: [
+                            {
+                                id: "l3",
+                                name: "BATTERY_LOW",
+                                description: "l3 des",
+                            },
+                            {
+                                id: "l4",
+                                name: "WIFI_BROKEN",
+                                description: "wifi damaged",
+                            },
+                        ],
+                        users: "YOASOBA",
                     },
                     {
-                        id: "l4",
-                        name: "KOJU4",
-                        description: "KOJU444 damage",
-                        status: false,
-                        version: "0.0.1",
-                    },
-                    {
-                        id: "l1",
-                        name: "WATER_DAMAGE",
-                        description: "water damage",
-                        status: true,
-                        version: "0.0.1",
+                        action: "DELETE",
+                        limits: [
+                            {
+                                id: "l1",
+                                limitName: "WATER_DAMAGE",
+                                description: "water damage",
+                            },
+                            {
+                                id: "l2",
+                                limitName: "CAMERA_DIRTY",
+                                description: "Dirty camera",
+                            },
+                        ],
+                        users: "YOASOBA",
                     },
                 ],
-                // delete: ["CAMERA_DIRTY"],
-                delete: [{ name: "WATER_DAMAGE" }, { name: "CAMERA_DIRTY" }],
             },
         });
         console.log("responsePut: ", responsePut);
+
+        const resultAllLogs = await getAllLogs;
+
         const bodyAfterPut: { combinations: Data } = JSON.parse(
             responsePut.body
         );
@@ -253,5 +289,6 @@ describe("mongo test container test", () => {
         console.log("bodyAfterPut: ", JSON.stringify(bodyAfterPut));
         // expect(responsePut.statusCode).toBe(200);
         // expect(bodyAfterPut.combinations.deviceID).toBe("007");
+        expect(resultAllLogs).toHaveLength(2);
     });
 });

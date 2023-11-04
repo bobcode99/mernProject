@@ -1,9 +1,9 @@
 import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import { postDataBodySchemaStrict } from "../schemas/dataSchema";
-import { BodyPut, Data, LimitationsType } from "../types/data";
+import { BodyPutType, Data, LimitationsType } from "../types/data";
 import * as repo from "./../repo/data-repo";
 import { Type } from "@sinclair/typebox";
-import { updateData } from "../service/updateData";
+import { updateData } from "../scripts/updateData";
 
 type IdParam = {
     id: string;
@@ -113,7 +113,7 @@ export const DataRouter = (
         }
     );
 
-    server.put<{ Params: IdParam; Body: BodyPut }>(
+    server.put<{ Params: IdParam; Body: BodyPutType }>(
         "/combinations/:id",
         async (request, reply) => {
             try {
