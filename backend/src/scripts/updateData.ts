@@ -1,5 +1,5 @@
 import { BodyPut, Data, LimitIdType, LimitationsType } from "../types/data";
-import * as repo from "./../repo/data-repo";
+import * as repo from "../repo/data-repo";
 
 import { Option, none, some, fold } from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
