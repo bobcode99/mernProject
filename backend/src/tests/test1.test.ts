@@ -6,7 +6,7 @@ import {
 import { serverOf, serverStart } from "../server";
 import { AppConfig } from "../types/appConfig";
 import { fail } from "assert";
-import { Data } from "../types/data";
+import { BodyPutType, Data } from "../types/data";
 import { addData } from "../repo/data-repo";
 import { getAllLogs } from "../service/logs";
 
@@ -238,45 +238,40 @@ describe("mongo test container test", () => {
         // delete log: l1, l2
         // snapshot: l3, l4
 
+        const bodyPut: BodyPutType = {
+            actionWithUserLimits: {
+                ADD: [
+                    {
+                        id: "l3",
+                        limitName: "BATTERY_LOW",
+                        description: "l3 des",
+                    },
+                    {
+                        id: "l4",
+                        limitName: "WIFI_BROKEN",
+                        description: "wifi damaged",
+                    },
+                ],
+                DELETE: [
+                    {
+                        id: "l1",
+                        limitName: "WATER_DAMAGE",
+                        description: "water damage",
+                    },
+                    {
+                        id: "l2",
+                        limitName: "CAMERA_DIRTY",
+                        description: "Dirty camera",
+                    },
+                ],
+                user: "sammy",
+            },
+        };
+
         const responsePut = await server.inject({
             method: "PUT",
             url: `/api/combinations/${body.combinations.id}`,
-            body: {
-                actionWithUserLimits: [
-                    {
-                        action: "ADD",
-                        limits: [
-                            {
-                                id: "l3",
-                                name: "BATTERY_LOW",
-                                description: "l3 des",
-                            },
-                            {
-                                id: "l4",
-                                name: "WIFI_BROKEN",
-                                description: "wifi damaged",
-                            },
-                        ],
-                        users: "YOASOBA",
-                    },
-                    {
-                        action: "DELETE",
-                        limits: [
-                            {
-                                id: "l1",
-                                limitName: "WATER_DAMAGE",
-                                description: "water damage",
-                            },
-                            {
-                                id: "l2",
-                                limitName: "CAMERA_DIRTY",
-                                description: "Dirty camera",
-                            },
-                        ],
-                        users: "YOASOBA",
-                    },
-                ],
-            },
+            body: bodyPut,
         });
         console.log("responsePut: ", responsePut);
 

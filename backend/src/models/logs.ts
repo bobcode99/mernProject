@@ -14,7 +14,9 @@ const logsSchema: Schema = new Schema(
         scenario: { type: String, required: true },
         user: { type: String, required: true },
         action: { type: String, enum: ["ADD", "DELETE"] },
-        date: Date,
+        dateAt: { type: Date, required: true },
+        actionDescription: { type: String, required: true },
+        uuid: { type: String },
     },
     {
         timestamps: true,

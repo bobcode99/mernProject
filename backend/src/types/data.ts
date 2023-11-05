@@ -6,6 +6,11 @@ export type Data = {
     scenario: string;
 };
 
+export type DataWithTimestamps = Data & {
+    createdAt: Date;
+    updatedAt: Date;
+};
+
 export type LimitIdType = string;
 
 export type LimitationsType = {
@@ -16,7 +21,7 @@ export type LimitationsType = {
     date: Date;
 };
 
-type LimitWithIdNameDesc = Omit<LimitationsType, "user" | "date">;
+export type LimitWithIdNameDesc = Omit<LimitationsType, "user" | "date">;
 
 export type BodyPutType = {
     actionWithUserLimits: {
@@ -24,4 +29,10 @@ export type BodyPutType = {
         ADD: Array<LimitWithIdNameDesc>;
         DELETE: Array<LimitWithIdNameDesc>;
     };
+};
+
+export type needAddDeleteIdsUserType = {
+    ADD: string[];
+    DELETE: string[];
+    user: string;
 };

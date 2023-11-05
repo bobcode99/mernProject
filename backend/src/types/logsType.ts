@@ -8,4 +8,9 @@ export type LogsType = {
     scenario: string;
     user: string;
     action: actionType;
+    dateAt: Date;
+    actionDescription: string;
+    uuid?: string;
 };
+
+export type LogsWithNoId = Omit<LogsType, "logId" | "uuid">;

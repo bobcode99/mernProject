@@ -2,15 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 import { Data } from "../types/data";
 
-export const limitSchema: Schema = new Schema({
-    id: String,
-    limitName: String,
-    description: String,
-    user: String,
-    date: Date,
-});
+export const limitSchema: Schema = new Schema(
+    {
+        id: String,
+        limitName: String,
+        description: String,
+        user: String,
+        date: Date,
+    },
+    {
+        _id: false,
+    }
+);
 
-const dataSchema: Schema = new Schema(
+const LimitSchema: Schema = new Schema(
     {
         id: { type: String, required: true, unique: true },
         deviceType: { type: String, required: true },
@@ -27,10 +32,10 @@ const dataSchema: Schema = new Schema(
     }
 );
 
-dataSchema.set("toJSON", {
-    virtuals: true,
-    versionKey: false,
-});
+// LimitSchema.set("toJSON", {
+//     virtuals: true,
+//     versionKey: false,
+// });
 
 export default mongoose.models.Limit ||
-    mongoose.model<Data>("Limit", dataSchema);
+    mongoose.model<Data>("Limit", LimitSchema);

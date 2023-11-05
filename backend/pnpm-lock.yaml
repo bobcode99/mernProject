@@ -35,6 +35,9 @@ dependencies:
   pino-pretty:
     specifier: ^10.2.0
     version: 10.2.0
+  uuid:
+    specifier: ^9.0.1
+    version: 9.0.1
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -46,6 +49,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.6.3
     version: 20.6.3
+  '@types/uuid':
+    specifier: ^9.0.6
+    version: 9.0.6
   '@vitest/coverage-v8':
     specifier: ^0.34.5
     version: 0.34.5(vitest@0.34.5)
@@ -537,6 +543,10 @@ packages:
     dependencies:
       '@types/node': 20.6.3
       '@types/ssh2-streams': 0.1.10
+    dev: true
+
+  /@types/uuid@9.0.6:
+    resolution: {integrity: sha512-BT2Krtx4xaO6iwzwMFUYvWBWkV2pr37zD68Vmp1CDV196MzczBRxuEpD6Pr395HAgebC/co7hOphs53r8V7jew==}
     dev: true
 
   /@types/webidl-conversions@7.0.0:
@@ -2743,6 +2753,11 @@ packages:
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /v8-to-istanbul@9.1.0:
     resolution: {integrity: sha512-6z3GW9x8G1gd+JIIgQQQxXuiJtCXeAjp6RaPEPLv62mH3iPHPxV6W3robxtCzNErRo6ZwTmzWhsbNvjyEBKzKA==}
