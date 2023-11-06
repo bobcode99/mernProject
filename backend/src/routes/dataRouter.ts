@@ -111,12 +111,14 @@ export const DataRouter = (
                 const id = request.params.id;
                 const bodyPut = request.body;
 
-                const combinations =
+                const statusResultUpdate =
                     await handleUpdateDataAndWriteLogs(id)(bodyPut);
 
-                console.log("updateResult: ", combinations);
-                if (combinations) {
-                    return reply.status(200).send({ combinations });
+                console.log("updateResult: ", statusResultUpdate);
+                if (statusResultUpdate) {
+                    return reply
+                        .status(200)
+                        .send({ status: statusResultUpdate });
                 } else {
                     return reply
                         .status(404)
@@ -124,7 +126,7 @@ export const DataRouter = (
                 }
             } catch (e) {
                 server.log.error(
-                    `DELETE /combinations/${request.params.id} Error: ${e}`
+                    `Put /combinations/${request.params.id} Error: ${e}`
                 );
                 return reply.status(500).send(`[Server Error]: ${e}`);
             }

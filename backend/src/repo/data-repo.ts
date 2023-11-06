@@ -6,7 +6,7 @@ import {
     LimitationsType,
 } from "./../types/data";
 import * as RTE from "fp-ts/ReaderTaskEither";
-import { Document } from "mongoose";
+import { ClientSession, Document } from "mongoose";
 export const getData: () => Promise<Array<Data>> = () => {
     return DataSchema.find().exec();
 };
@@ -22,17 +22,20 @@ export const getDataById: (id: string) => Promise<ExtendedData> = (id) => {
 
 export const updateData: (
     id: string,
-    dataBody: LimitationsType[]
+    dataBody: LimitationsType[],
     // dataBody: Data
-) => Promise<Data | null> = async (id, dataBody) => {
+    sessionMongoose: ClientSession
+) => Promise<Data | null> = async (id, dataBody, sessionMongoose) => {
     console.log("dataBody: ", dataBody);
 
     const updatedDocument = DataSchema.findOneAndUpdate(
         { id: id },
         {
-            limitations: dataBody,
+            $set: {
+                limitations: dataBody,
+            },
         }, // Use the $set operator
-        { new: true, context: "query" }
+        { new: true, session: sessionMongoose }
     ).exec();
     if (!updatedDocument) {
         console.log(`Document with id ${id} not found.`);

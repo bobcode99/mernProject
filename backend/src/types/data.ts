@@ -36,3 +36,12 @@ export type needAddDeleteIdsUserType = {
     DELETE: string[];
     user: string;
 };
+
+type BodyPutTypeThree =
+    | { Add: Array<LimitWithIdNameDesc>; User: string }
+    | { Delete: Array<LimitWithIdNameDesc>; User: string }
+    | {
+          Add: Array<LimitWithIdNameDesc>;
+          Delete: Array<LimitWithIdNameDesc>;
+          User: string;
+      };

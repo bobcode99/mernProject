@@ -273,16 +273,20 @@ describe("mongo test container test", () => {
             url: `/api/combinations/${body.combinations.id}`,
             body: bodyPut,
         });
-        console.log("responsePut: ", responsePut);
-
-        const resultAllLogs = await getAllLogs;
-
-        const bodyAfterPut: { combinations: Data } = JSON.parse(
+        const resultBodyPut: { status: "Success" | "Fail" } = JSON.parse(
             responsePut.body
         );
 
-        console.log("bodyAfterPut: ", JSON.stringify(bodyAfterPut));
-        // expect(responsePut.statusCode).toBe(200);
+        console.log("resultBodyPut: ", resultBodyPut);
+
+        const resultAllLogs = await getAllLogs;
+
+        // const bodyAfterPut: { combinations: Data } = JSON.parse(
+        //     responsePut.body
+        // );
+
+        // console.log("bodyAfterPut: ", JSON.stringify(bodyAfterPut));
+        expect(responsePut.statusCode).toBe(200);
         // expect(bodyAfterPut.combinations.deviceID).toBe("007");
         expect(resultAllLogs).toHaveLength(2);
     });

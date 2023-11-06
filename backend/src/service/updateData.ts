@@ -6,7 +6,7 @@ import {
     needAddDeleteIdsUserType,
 } from "../types/data";
 import * as dataRepo from "../repo/data-repo";
-import { startSession } from "mongoose";
+import { ClientSession, startSession } from "mongoose";
 import { LogsType, LogsWithNoId } from "../types/logsType";
 import { addLogs } from "./logs";
 import { v4 as uuidv4 } from "uuid";
@@ -66,6 +66,43 @@ const limitsDelete = (
     return shouldDeleteIds;
 };
 
+const updateDataWithSession = async (
+    idDataNeedUpdate: string,
+    needUpdatedLimitations: LimitationsType[],
+    session: ClientSession
+) => {
+    const needUpdateData = await dataRepo.updateData(
+        idDataNeedUpdate,
+        needUpdatedLimitations,
+        session
+    );
+
+    if (!needUpdateData) {
+        throw new Error(`Document with id ${idDataNeedUpdate} not found.`);
+    }
+
+    return needUpdateData;
+};
+
+const doWriteLogsWithSession = async (
+    logsNeedWrite: Array<LogsType>,
+    session: ClientSession
+) => {
+    // Your logic for writing logs using the provided session
+    // For example:
+    // await addLogs(logsBody, session);
+    // await addLogs(logsBody2, session);
+
+    try {
+        logsNeedWrite.forEach(async (logs) => {
+            await addLogs(logs, session);
+        });
+        return "success write logs";
+    } catch (error) {
+        return "fail write logs";
+    }
+};
+
 const getCreateLogs: (
     logsWithNoId: LogsWithNoId,
     shouldIds: string[]
@@ -85,12 +122,16 @@ const getCreateLogs: (
     };
 };
 
+// export const startWithMongooseSession = () => {};
+
 // export
 export const handleUpdateDataAndWriteLogs: (
     idDataNeedUpdate: string
 ) => (putBody: BodyPutType) => Promise<string> =
     (idDataNeedUpdate) => async (putBody) => {
-        // const sessionMongo = startSession();
+        const sessionMongoose = await startSession();
+
+        sessionMongoose.startTransaction();
         console.log(putBody);
         const needUpdateData = await dataRepo.getDataById(idDataNeedUpdate);
         console.log("needUpdateData: ", needUpdateData);
@@ -142,27 +183,6 @@ export const handleUpdateDataAndWriteLogs: (
         }
         console.log("needUpdatedLimitations final: ", needUpdatedLimitations);
 
-        const {
-            limitations,
-            _id,
-            createdAt,
-            updatedAt,
-            __v,
-            ...dataExcludesLimitations
-        } = needUpdateData;
-
-        const dataWithNewLimitations: Data = {
-            ...dataExcludesLimitations,
-            limitations: needUpdatedLimitations,
-        };
-        console.log("dataWithNewLimitations: ", dataWithNewLimitations);
-        // update
-        const updateResult = dataRepo.updateData(
-            idDataNeedUpdate,
-            needUpdatedLimitations
-        );
-        console.log("updateResult: ", updateResult);
-
         // Since i got three scenario, first is only have add logs, second is only have delete logs, third is have both add and delete logs.
         const addLogsNeedWrite = getCreateLogs(
             {
@@ -191,33 +211,63 @@ export const handleUpdateDataAndWriteLogs: (
             shouldDeleteIds
         );
 
-        // write logs
-        if (addLogsNeedWrite && deleteLogsNeedWrite) {
-            const uniqueIdRepresentSameAction = uuidv4();
-            const realNeedCreateAddLogs: LogsType = {
-                ...addLogsNeedWrite,
-                logId: uuidv4(),
-                uuid: uniqueIdRepresentSameAction,
-            };
-            const realDeleteCreateAddLogs: LogsType = {
-                ...deleteLogsNeedWrite,
-                logId: uuidv4(),
-                uuid: uniqueIdRepresentSameAction,
-            };
-            await addLogs(realNeedCreateAddLogs);
-            await addLogs(realDeleteCreateAddLogs);
-        } else if (addLogsNeedWrite) {
-            const realNeedCreateAddLogs: LogsType = {
-                ...addLogsNeedWrite,
-                logId: uuidv4(),
-            };
-            await addLogs(realNeedCreateAddLogs);
-        } else if (deleteLogsNeedWrite) {
-            const realDeleteCreateAddLogs: LogsType = {
-                ...deleteLogsNeedWrite,
-                logId: uuidv4(),
-            };
-            await addLogs(realDeleteCreateAddLogs);
+        try {
+            // update
+
+            const updateResult = await updateDataWithSession(
+                idDataNeedUpdate,
+                needUpdatedLimitations,
+                sessionMongoose
+            );
+            console.log("updateResult service: ", updateResult);
+
+            // write logs
+            if (addLogsNeedWrite && deleteLogsNeedWrite) {
+                const uniqueIdRepresentSameAction = uuidv4();
+                const realNeedCreateAddLogs: LogsType = {
+                    ...addLogsNeedWrite,
+                    logId: uuidv4(),
+                    uuid: uniqueIdRepresentSameAction,
+                };
+                const realDeleteCreateAddLogs: LogsType = {
+                    ...deleteLogsNeedWrite,
+                    logId: uuidv4(),
+                    uuid: uniqueIdRepresentSameAction,
+                };
+                await doWriteLogsWithSession(
+                    [realNeedCreateAddLogs, realDeleteCreateAddLogs],
+                    sessionMongoose
+                );
+                // await addLogs(realNeedCreateAddLogs);
+                // await addLogs(realDeleteCreateAddLogs);
+            } else if (addLogsNeedWrite) {
+                const realAddCreateAddLogs: LogsType = {
+                    ...addLogsNeedWrite,
+                    logId: uuidv4(),
+                };
+                // await addLogs(realAddCreateAddLogs);
+                await doWriteLogsWithSession(
+                    [realAddCreateAddLogs],
+                    sessionMongoose
+                );
+            } else if (deleteLogsNeedWrite) {
+                const realDeleteCreateAddLogs: LogsType = {
+                    ...deleteLogsNeedWrite,
+                    logId: uuidv4(),
+                };
+                // await addLogs(realDeleteCreateAddLogs);
+                await doWriteLogsWithSession(
+                    [realDeleteCreateAddLogs],
+                    sessionMongoose
+                );
+            }
+            return "Success";
+        } catch (error) {
+            console.error("Transaction failed:", error);
+
+            await sessionMongoose.abortTransaction();
+            sessionMongoose.endSession();
+
+            return "Fail";
         }
-        return "asd";
     };

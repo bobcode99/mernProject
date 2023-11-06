@@ -17,14 +17,14 @@ export const limitSchema: Schema = new Schema(
 
 const LimitSchema: Schema = new Schema(
     {
-        id: { type: String, required: true, unique: true },
-        deviceType: { type: String, required: true },
-        deviceID: { type: String, required: true },
+        id: { type: String, require: true, unique: true },
+        deviceType: { type: String, require: true },
+        deviceID: { type: String, require: true },
         limitations: {
             type: [limitSchema],
-            required: true,
+            require: true,
         },
-        scenario: { type: String, required: true },
+        scenario: { type: String, require: true },
         // createdDate: { type: Date, default: Date.now },
     },
     {
