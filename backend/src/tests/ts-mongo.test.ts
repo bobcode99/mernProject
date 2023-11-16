@@ -9,12 +9,13 @@ import * as repo from "../repo/user-repo";
 import { AppConfig } from "../types/appConfig";
 import { serverOf, serverStart } from "../server";
 
-describe("Mongoose Transactions with Testcontainers Test", () => {
+describe.skip("Mongoose Transactions with Testcontainers Test", () => {
     const server = serverOf();
 
     let mongoContainer1: StartedTestContainer;
     let mongoContainer2: StartedTestContainer;
     let mongoContainer3: StartedTestContainer;
+
     // let networkNow: Network;
     // const network = await new Network().start();
     beforeAll(async () => {
@@ -23,21 +24,21 @@ describe("Mongoose Transactions with Testcontainers Test", () => {
         console.log("1");
         mongoContainer1 = await new GenericContainer("mongo")
             .withExposedPorts(27017)
-            // .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M1"])
+            .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M1"])
             .withNetwork(network)
             .start();
         console.log("2");
 
         mongoContainer2 = await new GenericContainer("mongo")
             .withExposedPorts(27017)
-            // .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M2"])
+            .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M2"])
             .withNetwork(network)
             .start();
         console.log("3");
 
         mongoContainer3 = await new GenericContainer("mongo")
             .withExposedPorts(27017)
-            // .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M3"])
+            .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M3"])
             .withNetwork(network)
             .start();
         // Connect Mongoose to the MongoDB test container

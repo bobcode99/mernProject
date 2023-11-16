@@ -1,7 +1,6 @@
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import mongoose from "mongoose";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import { MongoDBContainer } from "@testcontainers/mongodb";
 import { serverOf } from "../server";
 
 let mongoContainer: StartedTestContainer;
@@ -26,7 +25,6 @@ describe.skip("Mongoose with Testcontainers Test", () => {
         mongoContainer = await new GenericContainer("mongo")
             .withExposedPorts(27017)
             .start();
-        // mongoContainer = await new MongoDBContainer("mongo:7.0-rc-jammy").start();
         // Get MongoDB connection details from the running container
         const host = mongoContainer.getHost();
         const port = mongoContainer.getMappedPort(27017);
