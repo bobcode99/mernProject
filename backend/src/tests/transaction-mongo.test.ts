@@ -1,51 +1,43 @@
 import { GenericContainer, StartedTestContainer } from "testcontainers";
+import { MongoDBContainer } from "@testcontainers/mongodb";
 import mongoose, { ClientSession } from "mongoose";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as repo from "../repo/user-repo";
 
-let mongoContainer1: StartedTestContainer;
-let mongoContainer2: StartedTestContainer;
-let mongoContainer3: StartedTestContainer;
+let mongodbContainer: StartedTestContainer;
 
 beforeAll(async () => {
     // Start three MongoDB containers to simulate a replica set
-    mongoContainer1 = await new GenericContainer("mongo")
-        .withExposedPorts(27017)
-        .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M1"])
-        .start();
+    mongodbContainer = await new MongoDBContainer("mongo:7.0-rc-jammy").start();
+    // await checkMongo(mongodbContainer);
 
-    mongoContainer2 = await new GenericContainer("mongo")
-        .withExposedPorts(27017)
-        .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M2"])
-        .start();
+    // Connect Mongoose to the MongoDB test container
+    // const host = mongoContainer1.getHost();
+    // const port = mongoContainer1.getMappedPort(27017);
+    const endpointURI =
+        "mongodb://" +
+        mongodbContainer.getHost() +
+        ":" +
+        mongodbContainer.getFirstMappedPort();
+    // const endpointURI = `mongodb://${host}:${port}/test`;
+    // const endpointURI =
+    //     "mongodb://" +
+    //     m1.getContainerIpAddress() +
 
-    mongoContainer3 = await new GenericContainer("mongo")
-        .withExposedPorts(27017)
-        .withCommand(["--replSet", "rs0", "--bind_ip", "localhost,M3"])
-        .start();
+    //     ":" +
+    //     m1.getFirstMappedPort();
 
-    // Initialize the replica set
-    await mongoContainer1.exec([
-        "mongo",
-        "--eval",
-        'printjson(rs.initiate({_id: "rs0", members: [{_id: 0, host: "M1:27017"}, { _id: 1, host: "M2:27017" }, { _id: 2, host: "M3:27017" }]}))',
-    ]);
-
-    // Wait for the replica set to be ready
-    await mongoContainer1.exec([
-        "bash",
-        "-c",
-        'until mongo --eval "printjson(rs.isMaster())" | grep ismaster | grep true > /dev/null 2>&1; do sleep 1; done',
-    ]);
+    console.log("endpointURI: ", endpointURI);
+    await mongoose.connect(endpointURI);
+    console.log("6");
 });
 
 afterAll(async () => {
-    // Stop and remove the MongoDB containers
-    await Promise.all([
-        mongoContainer1.stop(),
-        mongoContainer2.stop(),
-        mongoContainer3.stop(),
-    ]);
+    // Disconnect Mongoose and stop the MongoDB containers
+    await mongoose.disconnect();
+    if (mongodbContainer) {
+        await mongodbContainer.stop();
+    }
 });
 
 describe.skip("Mongoose Transactions with Testcontainers Test", () => {

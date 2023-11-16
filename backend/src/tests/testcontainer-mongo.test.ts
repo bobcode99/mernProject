@@ -1,6 +1,7 @@
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import mongoose from "mongoose";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { MongoDBContainer } from "@testcontainers/mongodb";
 
 let mongoContainer: StartedTestContainer;
 
@@ -9,11 +10,12 @@ beforeAll(async () => {
     mongoContainer = await new GenericContainer("mongo")
         .withExposedPorts(27017)
         .start();
-
+    // mongoContainer = await new MongoDBContainer("mongo:7.0-rc-jammy").start();
     // Get MongoDB connection details from the running container
     const host = mongoContainer.getHost();
     const port = mongoContainer.getMappedPort(27017);
 
+    console.log(`mongodb://${host}:${port}/test`);
     // Connect Mongoose to the MongoDB test container
     await mongoose.connect(`mongodb://${host}:${port}/test`);
 });
